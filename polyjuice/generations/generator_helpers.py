@@ -35,7 +35,7 @@ def batched_generate(generator,
     examples, 
     temperature=1, 
     num_beams=None,
-    num_return_sequences=3, 
+    num_return_sequences=3,
     do_sample=True, 
     batch_size=128, **kwargs):
     preds_list = []
@@ -45,9 +45,9 @@ def batched_generate(generator,
                 examples[e:e+batch_size],
                 temperature=temperature,
 #                 return_tensors=True,
-                num_beams=num_beams,
+                num_beams=1 if num_beams is None else num_beams,
                 max_length=1000,
-                early_stopping=None if num_beams is None else True,
+                early_stopping=False if num_beams is None else True,
                 do_sample=num_beams is None and do_sample,
                 num_return_sequences=num_return_sequences, 
                 **kwargs
@@ -55,10 +55,10 @@ def batched_generate(generator,
     return preds_list
 
 def generate_on_prompts(generator, prompts, temperature=1, 
-    num_beams=None, n=3, do_sample=True, batch_size=128, **kwargs):
+    num_beams=None, do_sample=True, batch_size=128, **kwargs):
     preds_list = batched_generate(generator, prompts,
-        temperature=temperature, n=n, 
-        num_beams=num_beams, 
+        temperature=temperature,
+        num_beams=num_beams,
         do_sample=do_sample, batch_size=batch_size, **kwargs)
     if len(prompts) == 1:
         preds_list = [preds_list]
